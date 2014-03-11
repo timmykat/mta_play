@@ -1,0 +1,49 @@
+oyster_card:
+  validity_period: 2    # hours
+rider:
+  regular:
+    discount: 1.0         # 0 -> 1
+  student:
+    discount: 0.5
+  elderly:
+    discount: 0.5
+  employee:
+    discount: 0.0
+prorate:
+  pass:
+    -
+      day:        15
+      amount:     0.5
+    -
+      day:        25
+      amount:     0.75
+  per_ride:
+    weekend:      0.75
+transport:
+  bus:
+    pass:           40             
+    fee:            2
+    per:            ride
+    allowed_riders: 
+    - all   
+  subway:
+    pass:           60          
+    fee:            3
+    per:            ride    
+    allowed_riders: 
+    - all   
+  commuter_rail:
+    pass:           80
+    fee:            10
+    per:            ride    
+    allowed_riders: 
+    - all   
+  special_bus:
+    pass:           20
+    fee:            1
+    per:            ride    
+    allowed_riders: 
+    - elderly   
+    
+  
+  
