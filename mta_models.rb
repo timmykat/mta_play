@@ -1,6 +1,14 @@
+class Object
+  def save
+    if !super
+      self.errors.each { |e| puts e } if VERBOSE
+    end
+  end
+end
+
 class Rider 
-  include DataMapper::Resource
-  include DataMapper::Validate
+  include ::DataMapper::Resource
+  include ::DataMapper::Validate
   
   #--Define------------------------
   property :id,         Serial
@@ -34,6 +42,10 @@ class Rider
     self.save
   end
 
+  # options:
+  #    :pass => one of the transport types
+  # OR
+  #    :amount => floating point cash amount
   def purchase_card(options)
     oyster_card = self.oyster_cards.new
     
@@ -88,8 +100,8 @@ end
 
 
 class OysterCard
-  include DataMapper::Resource
-  include DataMapper::Validate
+  include ::DataMapper::Resource
+  include ::DataMapper::Validate
   
   #--Define------------------------
   property :id,                 Serial
@@ -223,8 +235,8 @@ class OysterCard
 end
 
 class Trip
-  include DataMapper::Resource
-  include DataMapper::Validate
+  include ::DataMapper::Resource
+  include ::DataMapper::Validate
   
   #--Define------------------------
   property :id,                 Serial
@@ -263,8 +275,8 @@ class Trip
 end
 
 class Leg
-  include DataMapper::Resource
-  include DataMapper::Validate
+  include ::DataMapper::Resource
+  include ::DataMapper::Validate
   
   #--Define------------------------
   property :id,               Serial
@@ -289,8 +301,8 @@ class Leg
 end
 
 # class Location
-#   include DataMapper::Resource
-#   include DataMapper::Validate
+#   include ::DataMapper::Resource
+#   include ::DataMapper::Validate
 # 
 #   #--Define------------------------
 #   property :id,         Serial

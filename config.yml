@@ -43,7 +43,8 @@ transport:
     fee:            1
     per:            ride    
     allowed_riders: 
-    - elderly   
+    - elderly
+    - employee   
     
   
   

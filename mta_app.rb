@@ -4,45 +4,20 @@ require 'data_mapper'
 require 'dm-sqlite-adapter'
 require 'pry'
 require 'sqlite3'
-
-require 'rspec-core'
-require 'rspec-expectations'
 require 'dm-rspec'
 
+require_relative 'config'
+require_relative 'mta_models'
+require_relative 'db_init'
 
-# Get configuration
-$config = YAML::load(File.open('config.yml'))
-
-# The following creates a charge lookup table based on (rider type, transport type, and method - pass or charge
-$fee_lookup = {}
-$config['rider'].each do |k, v|
-  $fee_lookup[k] = {}
-  $config['transport'].each do |kk, vv|
-    $fee_lookup[k][kk] = {
-      'pass' => v['discount'].to_f * vv['pass'].to_f,
-      'fee'  => v['discount'].to_f * vv['fee'].to_f
-    }
-  end
+def mta_help
+  puts "\nRider types: \n- regular (default)\n- student\n- elderly\n- employee\n\n"
+  puts "Transport types: \n- bus (default)\n- subway\n- commuter_rail\n- special_bus\n\n"
+  puts "Recommended sequence:\n"
+  puts "  1. Create a rider:        r = Rider.new(type: 'student')\n"
+  puts "  2. Purchase card:         c = r.purchase_card(pass: 'commuter_rail') or c = r.purchase_card(amount: 20.00)\n"
+  puts "  3. Swipe card to travel:  c.swipe('bus')\n\n"
+  puts "(mta_help gets this list)\n"
 end
 
-require_relative 'mta_models'
-
-# Configure DataMapper - use in-memory connection
-DataMapper::Property::String.length(255)
-DataMapper::Property::Boolean.allow_nil(false)
-DataMapper::Model.raise_on_save_failure = true
-DataMapper.setup(:default, 'sqlite::memory:')
-
-# Create the tables
-DataMapper.auto_migrate!
-
-puts "Rider types: 'regular', 'student', 'elderly', 'employee'. Default is 'regular'\\n"
-puts "Transport types: 'bus', 'subway', 'commuter_rail', 'special_bus'. Default is 'bus'\n\n"
-puts "Recommended sequence:\n"
-puts "  1. Create a rider:\n"
-puts "     e.g. r = Rider.new(type: 'student')\n"
-puts "  2. Purchase card:\n"
-puts "     e.g. c = r.purchase_card(pass: 'commuter_rail') or c = r.purchase_card(amount: 20.00)\n\n"
-puts "  3. Swip your card to board a type of transportation:\n"
-puts "     e.g. c.swipe('bus')\n\n"
-puts "Ok, go."
+mta_help
