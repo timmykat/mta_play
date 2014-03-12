@@ -37,6 +37,8 @@ GEM
       dm-core (~> 1.2.0)
     dm-migrations (1.2.0)
       dm-core (~> 1.2.0)
+    dm-noisy-failures (0.2.3)
+      data_mapper
     dm-rspec (0.2.4)
       dm-core
       dm-validations
@@ -95,6 +97,7 @@ PLATFORMS
 
 DEPENDENCIES
   data_mapper
+  dm-noisy-failures
   dm-rspec
   dm-sqlite-adapter
   pry
