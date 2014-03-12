@@ -20,24 +20,6 @@ prorate:
   per_ride:
     weekend:      0.75
 transport:
-  bus:
-    pass:           40             
-    fee:            2
-    per:            ride
-    allowed_riders: 
-    - all   
-  subway:
-    pass:           60          
-    fee:            3
-    per:            ride    
-    allowed_riders: 
-    - all   
-  commuter_rail:
-    pass:           80
-    fee:            10
-    per:            ride    
-    allowed_riders: 
-    - all   
   special_bus:
     pass:           20
     fee:            1
@@ -45,6 +27,23 @@ transport:
     allowed_riders: 
     - elderly
     - employee   
-    
+  commuter_rail:
+    pass:           80
+    fee:            10
+    per:            ride    
+    allowed_riders: 
+    - all       
+  subway:
+    pass:           60          
+    fee:            3
+    per:            ride    
+    allowed_riders: 
+    - all   
+  bus:
+    pass:           40             
+    fee:            2
+    per:            ride
+    allowed_riders: 
+    - all   
   
   
