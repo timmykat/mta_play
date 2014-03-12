@@ -1,0 +1,7 @@
+require_relative 'models/fund_authorization'
+require_relative 'models/oyster_card'
+require_relative 'models/rider'
+require_relative 'models/swipe'
+require_relative 'models/transaction'
+require_relative 'models/transit_fee'
+require_relative 'models/trip'
