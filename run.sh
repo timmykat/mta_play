@@ -1,2 +1,2 @@
 #!/bin/bash
-pry -r ./mta_app.rb
+pry -r ./${1:-mta_app}.rb
