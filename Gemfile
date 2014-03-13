@@ -7,5 +7,6 @@ gem 'dm-rspec'
 gem 'dm-noisy-failures'
 gem 'pry'
 gem 'pry-debugger'
+gem 'factory_girl'
 
 gem 'rspec'

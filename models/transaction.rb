@@ -53,7 +53,7 @@ class Transaction
             end
         end
       when 'add_value_to_card'
-        if FundAuthorization(@fee)
+        if FundAuthorization.authorize(@fee)
           @authorized = true
           self.save
           return true

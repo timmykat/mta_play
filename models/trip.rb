@@ -20,5 +20,4 @@ class Trip
     @current_transport = attributes[:transport_type]
     @start_time = (attributes[:start_time].nil? ? Time.now : attributes[:start_time]).to_datetime
   end
-
 end

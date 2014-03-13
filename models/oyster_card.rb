@@ -16,30 +16,86 @@ class OysterCard
   timestamps :at
 
   # Assocations
-  belongs_to  :rider
   has 1,      :trip
   has n,      :transactions
   
   # Validations--------------------
-  validates_within :pass_type, :set => $config['transport'].keys, :unless => lambda { |res| res.pass_type.nil? }
+  validates_presence_of :rider_type
+  validates_within :pass_type, :set => $config['transport'].keys, :unless => lambda { |t| t.pass_type.nil? }
   validates_within :rider_type, :set => $config['rider'].keys
-  validates_within :current_transport, :set => $config['transport'].keys, :unless => lambda { |res| res.current_transport.nil? }
+  validates_within :current_transport, :set => $config['transport'].keys, :unless => lambda { |t| t.current_transport.nil? }
 
   
 #  attr_accessor :pass_type, :rider_type 
-  attr_accessor :rider_type, :pass_type, :month_valid, :year_valid,  :current_transport, :balance, :trip_active, :discount 
+  attr_accessor :month_valid, :year_valid,  :current_transport, :balance, :trip_active, :discount 
 
   #-- Methods---------------------
   def initialize(attributes = {})
-    attributes[:rider_type] ||= 'regular'
     @balance = 0.0
     @trip_active = false
     @pass_type = (attributes[:pass_type].nil? ? 'bus' : attributes[:pass_type]) if attributes[:amount].nil?
     @rider_type = attributes[:rider_type]
   end
 
+#   options for purchase_card:
+#       :rider_type => one of the rider types
+#       
+#       { :pass => one of the transport types
+#    OR {
+#       { :amount => floating point cash amount
+  def self.purchase(options = {})
+    add_amount = options.delete(:amount)
+    oyster_card = OysterCard.new(options)
+    begin
+      oyster_card.save
+    rescue DataMapper::SaveFailureError
+      puts "There was an error purchasing the Oyster Card."
+      oyster_card.errors.each do |e| 
+        puts e
+      end
+      return false
+    end
+        
+    case
+      when !options[:pass_type].nil?
+        fee = TransitFee.calculate_pass(oyster_card.rider_type, options[:pass_type])
+        transaction = oyster_card.transactions.new(transaction_type: 'buy_pass', transport_type: options[:pass_type], mode: 'pass', fee: fee)
+      when !add_amount.nil? && (add_amount > 0.1)
+        transaction = oyster_card.transactions.new(transaction_type: 'add_value_to_card', fee: add_amount, mode: 'debit_card')
+      else
+        puts "You need to enter an amount or select a pass type (bus, subway, commuter_rail or special_bus)"
+        return false
+    end
+    
+    if transaction.authorized?
+      case
+        when options[:pass_type]
+          oyster_card.month_valid = Time.now.month.to_s
+          oyster_card.year_valid = Time.now.year.to_s
+          oyster_card.pass_type = options[:pass_type]
+        when !add_amount.nil? && (add_amount > 0.1)
+          oyster_card.balance += add_amount
+      end
+
+      begin
+        oyster_card.save
+      rescue DataMapper::SaveFailureError => e
+        oyster_card.errors.each do |e| 
+          puts e
+        end
+        puts "There was an updating your Oyster Card."
+        return false
+      end
+    else
+      puts "Sorry, your transaction was not authorized."
+      return false
+    end
+    oyster_card.display_info
+    oyster_card
+  end  
+
   # Swipe the card
-  def swipe(transport_type, location = nil)
+  def swipe(transport_type)
   
     oyster_card = self
   
@@ -77,7 +133,12 @@ class OysterCard
   end
 
   def pass_current?
-    Time.now.year.to_s == @year_valid and Time.now.month.to_s == @month_valid
+    unless
+      Time.now.year.to_s == @year_valid and Time.now.month.to_s == @month_valid
+      return true
+    end
+    put "Your pass is not valid for the current month"
+    false
   end
 
   def valid_transport_modes

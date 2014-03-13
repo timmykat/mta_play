@@ -44,6 +44,11 @@ transport:
     fee:            2
     per:            ride
     allowed_riders: 
-    - all   
+    - all
+trip-distance:
+  commuter_rail:
+    unit:           zone
+    fee:            2
+   
   
   
